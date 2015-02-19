@@ -4,8 +4,8 @@ version '0.0.1'
 group 'com.jni.bitmap_operations'
 
 android {
-    compileSdkVersion propCompileSdkVersion
-    buildToolsVersion propBuildToolsVersion
+    compileSdkVersion 21
+    buildToolsVersion "21.1.1"
 
     sourceSets {
         main {
@@ -14,7 +14,7 @@ android {
             resources.srcDirs = ['src']
             aidl.srcDirs = ['src']
             renderscript.srcDirs = ['src']
-            jni.srcDirs = []
+            jni.srcDirs = ['jni']
         }
     }
 

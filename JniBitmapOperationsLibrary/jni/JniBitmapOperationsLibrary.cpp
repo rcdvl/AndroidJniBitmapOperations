@@ -1,5 +1,4 @@
 #include <jni.h>
-#include <jni.h>
 #include <android/log.h>
 #include <stdio.h>
 #include <android/bitmap.h>
@@ -15,6 +14,9 @@ extern "C"
 //store
     JNIEXPORT jobject JNICALL Java_com_jni_bitmap_1operations_JniBitmapHolder_jniStoreBitmapData(
 	    JNIEnv * env, jobject obj, jobject bitmap);
+//store
+    JNIEXPORT jobject JNICALL Java_com_jni_bitmap_1operations_JniBitmapHolder_jniStoreBitmapDataFromPath(
+        JNIEnv * env, jobject obj, jstring bitmapPath);
 //get
     JNIEXPORT jobject JNICALL Java_com_jni_bitmap_1operations_JniBitmapHolder_jniGetBitmapFromStoredBitmapData(
 	    JNIEnv * env, jobject obj, jobject handle);
@@ -304,6 +306,23 @@ JNIEXPORT jobject JNICALL Java_com_jni_bitmap_1operations_JniBitmapHolder_jniSto
     jniBitmap->_storedBitmapPixels = storedBitmapPixels;
     return env->NewDirectByteBuffer(jniBitmap, 0);
     }
+
+JNIEXPORT jobject JNICALL Java_com_jni_bitmap_1operations_JniBitmapHolder_jniStoreBitmapDataFromPath(
+        JNIEnv * env, jobject obj, jstring bitmapPath) {
+    AndroidBitmapInfo bitmapInfo;
+    uint32_t* storedBitmapPixels = NULL;
+    //LOGD("reading bitmap info...");
+    int ret;
+
+    jclass bitmapClass = env->FindClass("android/graphics/BitmapFactory");
+    jmethodID createBitmapMethodID = env->GetStaticMethodID(bitmapClass,"decodeFile",
+        "(Ljava/lang/String;)Landroid/graphics/Bitmap;");
+
+    jobject bitmap = env->CallStaticObjectMethod(bitmapClass, createBitmapMethodID,
+        bitmapPath);
+
+    return Java_com_jni_bitmap_1operations_JniBitmapHolder_jniStoreBitmapData(env, obj, bitmap);
+}
 
 /**scales the image using the fastest, simplest algorithm called "nearest neighbor" */ //
 JNIEXPORT void JNICALL Java_com_jni_bitmap_1operations_JniBitmapHolder_jniScaleNNBitmap(
